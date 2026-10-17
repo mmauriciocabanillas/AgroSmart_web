@@ -1,6 +1,14 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, statSync } from "node:fs";
-import ffmpeg from "ffmpeg-static";
+import { existsSync, mkdirSync, statSync } from "node:fs";
+import bundledFFmpeg from "ffmpeg-static";
+
+const ffmpeg = process.env.FFMPEG_BIN || bundledFFmpeg;
+if (!ffmpeg || !existsSync(ffmpeg)) {
+  console.error(
+    "El video final ya está incluido y no necesita regenerarse. Para procesar otro original, define FFMPEG_BIN con la ruta absoluta de tu ejecutable FFmpeg.",
+  );
+  process.exit(1);
+}
 
 mkdirSync("public/media", { recursive: true });
 const input = "AgroSmart_Inicio/arandanos-original.mp4";

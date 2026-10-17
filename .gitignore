@@ -4,4 +4,5 @@ dist/
 .env.local
 test-results/
 playwright-report/
+.vercel/
 AgroSmart_Inicio/arandanos-original.mp4

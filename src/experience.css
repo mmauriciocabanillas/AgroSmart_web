@@ -1770,18 +1770,6 @@
 [data-motion="off"] .depth-note {
   transform: rotate(2deg) !important;
 }
-@media (prefers-reduced-motion: reduce) {
-  .experience-shell * {
-    animation: none !important;
-    transition: none !important;
-  }
-  .depth-deck {
-    transform: none !important;
-  }
-  .depth-note {
-    transform: rotate(2deg) !important;
-  }
-}
 
 /* Espacio real para la nota: nunca tapa el enlace de la escena. */
 .hero-depth {
@@ -1874,4 +1862,65 @@ html:has([data-motion="off"]) {
   border-color: #8bab68;
   font-size: 12px;
   margin-top: 12px;
+}
+
+/* La elección explícita del visitante controla los efectos, incluso al solicitar
+   movimiento reducido en el sistema. Sin elección, se conserva esa preferencia. */
+[data-motion="on"] .hero-line {
+  animation-duration: 1s;
+}
+[data-motion="on"] .depth-deck {
+  animation-duration: 1.6s;
+}
+[data-motion="on"] .depth-land {
+  animation: land-drift 8s ease-in-out infinite;
+}
+[data-motion="on"] .depth-note {
+  animation:
+    note-arrival 1.8s cubic-bezier(0.16, 1, 0.3, 1) both,
+    note-float 6s 1.8s ease-in-out infinite;
+}
+.hero-experience[data-visible="false"] .depth-deck,
+.hero-experience[data-visible="false"] .depth-land,
+.hero-experience[data-visible="false"] .depth-note {
+  animation-play-state: paused;
+}
+.motion-controls {
+  column-gap: 14px;
+  row-gap: 0;
+}
+.motion-controls > button {
+  font-size: 11px;
+  min-height: 48px;
+}
+.motion-explanation {
+  display: block;
+  flex-basis: 100%;
+  color: #dce8cf;
+  font-size: 11px;
+  line-height: 1.7;
+}
+@keyframes land-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+}
+@keyframes note-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -7px;
+  }
+}
+@media (max-width: 600px) {
+  .motion-controls > button,
+  .motion-explanation {
+    font-size: 10px;
+  }
 }

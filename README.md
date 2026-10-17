@@ -1,6 +1,6 @@
 # AgroSmart · web de presentación
 
-Segunda versión local: autonomía del productor, recursos cotidianos y presentación interactiva con profundidad 3D. React 19.3.1, TypeScript 7.0.2 y Vite 8.3.4. Node.js 24 LTS recomendado; se ejecutó con Node 24.15.0 y npm 11.12.1.
+Segunda versión local: autonomía del productor, recursos cotidianos y presentación interactiva con profundidad 3D. React 19.3.1, TypeScript 7.0.2 y Vite 8.3.4. Node.js 24.x y pnpm 11.19.0 fijados en package.json. Se conserva solo pnpm-lock.yaml como lockfile.
 
 ## Abrir y desarrollar
 
@@ -8,8 +8,8 @@ Desde PowerShell:
 
 ```powershell
 Set-Location 'C:\Users\ASUS\Documents\Siklerito\Proyectos Personales\Agrosmart'
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 Abre la URL Local que imprime Vite (normalmente http://127.0.0.1:5173/). Los medios y las fuentes se sirven desde el proyecto; no requieren servicios externos para la presentación.
@@ -27,15 +27,15 @@ Coloca la URL real HTTP/S cuando exista y reinicia Vite; para producción vuelve
 ## Generar la versión final
 
 ```powershell
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
-`dist/` contiene la web estática lista para alojar. `npm run preview` permite comprobarla por HTTP (normalmente http://127.0.0.1:4173/). No abrir `dist/index.html` por doble clic: los módulos requieren servidor HTTP. La salida está preparada para la raíz de un sitio; para publicar en un subdirectorio, configurar `base` en Vite y revisar las rutas de medios.
+`dist/` contiene la web estática lista para alojar. `pnpm preview` permite comprobarla por HTTP (normalmente http://127.0.0.1:4173/). No abrir `dist/index.html` por doble clic: los módulos requieren servidor HTTP. La salida está preparada para la raíz de un sitio; para publicar en un subdirectorio, configurar `base` en Vite y revisar las rutas de medios.
 
 ## Qué incluye
 
-- Hero con video local de arándanos, póster, pausa, reproducción explícita y respeto por movimiento reducido y ahorro de datos.
+- Hero con video local de arándanos en bucle automático, sin audio ni controles de reproducción. Póster alternativo si el navegador bloquea autoplay, hay ahorro de datos o el visitante reduce el movimiento. Pausa fuera de vista y reanuda al volver.
 - Entrada animada por bloques, escena con profundidad y reacción al puntero, tres escenas seleccionables, repetición de entrada y control de movimiento. CSS y APIs nativas; sin motor 3D ni librerías nuevas.
 - Situaciones cotidianas y capacidades por acción: Consulta, Supervisa, Organiza y Gastos. El arándano sigue como escenario piloto.
 - Registro por texto o pasos: preparar, corregir y confirmar. La interpretación está acotada al ejemplo y montos numéricos, no es una integración de IA ni reconocimiento de voz.
@@ -48,9 +48,9 @@ npm run preview
 ## Verificación
 
 ```powershell
-npm test
-npm run test:e2e
-npm run build
+pnpm test
+pnpm test:e2e
+pnpm build
 ```
 
 Las pruebas de navegador usan una instalación local de Google Chrome mediante Playwright. Si Chrome no está instalado, instala Chromium con `npx playwright install chromium` y elimina `channel: 'chrome'` de `playwright.config.ts`. No es necesario ejecutar estas pruebas para usar la web.
@@ -61,7 +61,7 @@ Resultados y límites de verificación: `docs/VALIDACION.md`. Registro de recurs
 
 El texto de reorientación más reciente se conserva en `docs/BRIEF_ACTUALIZADO.md`. Sustituye la narrativa del paquete inicial. La landing ya no presenta estadísticas, satélites ni trazabilidad como argumento. Los registros de la demo viven solo en memoria y se pierden al recargar; el monto confirmado se comparte entre las vistas Fácil y Estándar.
 
-Para revisar la animación, abre la portada, explora “Mi día / Mis recursos / Un aviso” y mueve el puntero sobre la escena. “Repetir entrada” reproduce su llegada. “Reducir movimiento” desactiva los efectos. Si el sistema solicita movimiento reducido, se respeta desde el inicio.
+Para revisar la animación, abre la portada, explora “Mi día / Mis recursos / Un aviso” y mueve el puntero sobre la escena. “Repetir entrada” reproduce su llegada. “Reducir animaciones” desactiva los efectos y el video. Si el sistema solicita movimiento reducido, se respeta desde el inicio. El botón “Activar animaciones” permite elegir expresamente ver los efectos. La elección se conserva en localStorage; “Usar ajuste del sistema” la borra. “Ver entrada animada” también permite activar y reproducir la entrada. No se cambian ajustes de Windows.
 
 Se incluyen capturas y una grabación real de la interfaz en `docs/capturas/`. Para regenerarlas con Vite en marcha: `node scripts/capture-experience.mjs`. Esta utilidad opcional usa Chrome y FFmpeg de Playwright (`npx playwright install ffmpeg`); no son dependencias de la web publicada.
 
@@ -94,4 +94,12 @@ No es necesario descargar nada para abrir esta versión: los recursos finales ya
 node scripts/prepare-media.mjs
 ```
 
-El original se conserva localmente pero no se publica en `dist/`. El script usa FFmpeg como herramienta de desarrollo; su binario tampoco se publica. La procedencia, transformaciones y licencia están registradas en `docs/FUENTES_Y_LICENCIAS.md`.
+El original se conserva localmente pero no se publica en `dist/`. El script usa FFmpeg como herramienta opcional de desarrollo; su binario tampoco se publica. El postinstall de ffmpeg-static está deshabilitado expresamente en pnpm-workspace.yaml porque el MP4 final ya existe. Para regenerarlo, define FFMPEG_BIN con la ruta absoluta a un FFmpeg ya instalado. No es necesario aprobar ni descargar FFmpeg para pnpm dev, pnpm build o Vercel. La procedencia, transformaciones y licencia están registradas en `docs/FUENTES_Y_LICENCIAS.md`.
+
+## Vercel
+
+Se incluye vercel.json con preset Vite, salida dist y comandos que ejecutan pnpm 11.19.0 explícitamente mediante npx. Así el despliegue no depende de la versión de pnpm preinstalada en el contenedor. Node.js queda fijado a 24.x en package.json.
+
+Usa la raíz del repositorio como Root Directory. La instalación usa pnpm install --frozen-lockfile y el build pnpm build, a través del ejecutor versionado del manifiesto. Se verificaron localmente esos mismos comandos y la salida estática; un despliegue real en Vercel necesita sus propios logs de éxito.
+
+VITE_APP_URL puede configurarse en las variables del proyecto en Vercel. Sin esa variable, los accesos continúan mostrando el diálogo de demostración.

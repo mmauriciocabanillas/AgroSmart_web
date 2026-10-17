@@ -42,6 +42,6 @@ Estas fuentes se conservan como registro del trabajo anterior. Sus porcentajes y
 ## Documentación técnica consultada
 
 - https://react.dev/versions — documentación oficial de React, familia estable 19.3; npm resolvió 19.3.1.
-- https://vite.dev/guide/ — guía oficial; versión estable instalada 8.3.4, fijada en package-lock.
-- Dependencias y versiones exactas reproducibles en `package-lock.json`.
+- https://vite.dev/guide/ — guía oficial; versión estable instalada 8.3.4, fijada en pnpm-lock.yaml.
+- Dependencias y versiones exactas reproducibles en `pnpm-lock.yaml`. Gestor fijado a pnpm 11.19.0 y Node 24.x.
 - API web estándar: reproducción de HTMLMediaElement, IntersectionObserver, MediaQueryList, dialog y SpeechSynthesis. Se verificaron sus ramas de comportamiento con pruebas de navegador.

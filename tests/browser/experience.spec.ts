@@ -42,14 +42,14 @@ test("el puntero genera profundidad y reducir movimiento la desactiva", async ({
   await expect
     .poll(() => surface.evaluate((el) => el.style.getPropertyValue("--tilt-y")))
     .not.toBe("");
-  await page.getByRole("button", { name: "Reducir movimiento" }).click();
+  await page.getByRole("button", { name: "Reducir animaciones" }).click();
   await expect(page.locator(".experience-shell")).toHaveAttribute(
     "data-motion",
     "off",
   );
   await expect(
-    page.getByRole("button", { name: "Repetir entrada" }),
-  ).toBeDisabled();
+    page.getByRole("button", { name: "Ver entrada animada" }),
+  ).toBeEnabled();
   expect(
     await page
       .locator(".depth-deck")
@@ -57,14 +57,14 @@ test("el puntero genera profundidad y reducir movimiento la desactiva", async ({
   ).toBe("none");
   await page.getByRole("button", { name: "Un aviso", exact: true }).click();
   await expect(page.locator(".scene-alert")).toBeVisible();
-  await page.getByRole("button", { name: "Activar movimiento" }).click();
+  await page.getByRole("button", { name: "Activar animaciones" }).click();
   await expect(page.locator(".experience-shell")).toHaveAttribute(
     "data-motion",
     "on",
   );
 });
 
-test("preferencia del sistema elimina las animaciones decorativas", async ({
+test("el sistema reduce el movimiento y el visitante puede activar los efectos", async ({
   page,
 }) => {
   await page.goto("/");
@@ -73,8 +73,8 @@ test("preferencia del sistema elimina las animaciones decorativas", async ({
     "off",
   );
   await expect(
-    page.getByRole("button", { name: "Movimiento reducido del sistema" }),
-  ).toBeDisabled();
+    page.getByRole("button", { name: "Activar animaciones" }),
+  ).toBeEnabled();
   expect(
     await page
       .locator(".depth-deck")
@@ -85,6 +85,34 @@ test("preferencia del sistema elimina las animaciones decorativas", async ({
       .locator(".depth-deck")
       .evaluate((el) => getComputedStyle(el).transform),
   ).toBe("none");
+  await page.getByRole("button", { name: "Activar animaciones" }).click();
+  await expect(page.locator(".experience-shell")).toHaveAttribute(
+    "data-motion",
+    "on",
+  );
+  expect(
+    await page
+      .locator(".depth-deck")
+      .evaluate((el) => getComputedStyle(el).animationName),
+  ).toBe("deck-arrival");
+  expect(
+    await page
+      .locator(".depth-land")
+      .evaluate((el) => getComputedStyle(el).animationName),
+  ).toBe("land-drift");
+  await page.reload();
+  await expect(page.locator(".experience-shell")).toHaveAttribute(
+    "data-motion",
+    "on",
+  );
+  await page.getByRole("button", { name: "Usar ajuste del sistema" }).click();
+  await expect(page.locator(".experience-shell")).toHaveAttribute(
+    "data-motion",
+    "off",
+  );
+  expect(
+    await page.evaluate(() => localStorage.getItem("agrosmart-motion")),
+  ).toBeNull();
 });
 
 test("registro se revisa y corrige antes de compartirlo entre Fácil y Estándar", async ({

@@ -1,2 +1,3 @@
 allowBuilds:
-  ffmpeg-static: set this to true or false
+  # El MP4 final ya está incluido. No descargar un binario al instalar la web.
+  ffmpeg-static: false

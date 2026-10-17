@@ -19,7 +19,6 @@ import {
   Map,
   CircleAlert,
   Sprout,
-  Pause,
   Play,
   Layers,
   MoveUpRight,
@@ -128,64 +127,69 @@ function HeroMedia() {
   const { enabled } = useMotion();
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [unavailable, setUnavailable] = useState(false);
-  const manualPause = useRef(false);
-  const visible = useRef(false);
-  const manualPlay = useRef(false);
-  const attempt = async () => {
-    const v = video.current;
-    if (!v || manualPause.current || !visible.current || document.hidden)
-      return;
-    if (!v.getAttribute("src")) {
-      v.src = "/media/arandanos-hero.mp4";
-      v.load();
-    }
-    try {
-      await v.play();
-    } catch {
-      setPlaying(false);
-    }
-  };
   useEffect(() => {
-    const v = video.current!;
-    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const element = video.current!;
+    let visible = false;
+    let disposed = false;
+    let failed = false;
     const connection = (
       navigator as Navigator & {
         connection?: EventTarget & { saveData?: boolean };
       }
     ).connection;
-    const sync = () => {
+    const sync = async () => {
+      if (disposed) return;
       if (
-        !visible.current ||
+        !enabled ||
+        connection?.saveData ||
+        !visible ||
         document.hidden ||
-        manualPause.current ||
-        (!manualPlay.current &&
-          (!enabled || media.matches || connection?.saveData))
-      )
-        v.pause();
-      else void attempt();
+        failed
+      ) {
+        element.pause();
+        return;
+      }
+      if (!element.getAttribute("src")) {
+        element.src = "/media/arandanos-hero.mp4";
+        element.load();
+      }
+      try {
+        await element.play();
+        if (disposed || !visible || document.hidden) element.pause();
+      } catch {
+        element.pause(); /* Autoplay bloqueado: el póster permanece visible. */
+      }
     };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        visible.current = entry.isIntersecting;
-        sync();
+        visible = entry.isIntersecting;
+        void sync();
       },
       { threshold: 0.1 },
     );
-    observer.observe(v);
-    document.addEventListener("visibilitychange", sync);
-    const preferenceChange = () => {
-      manualPlay.current = false;
-      sync();
+    observer.observe(element);
+    const update = () => {
+      void sync();
     };
-    media.addEventListener("change", preferenceChange);
-    connection?.addEventListener("change", preferenceChange);
+    const error = () => {
+      failed = true;
+      setPlaying(false);
+    };
+    document.addEventListener("visibilitychange", update);
+    // Algunos navegadores requieren la primera interacción de la visita.
+    document.addEventListener("pointerdown", update, { passive: true });
+    document.addEventListener("keydown", update);
+    connection?.addEventListener("change", update);
+    element.addEventListener("error", error);
     return () => {
+      disposed = true;
       observer.disconnect();
-      v.pause();
-      document.removeEventListener("visibilitychange", sync);
-      media.removeEventListener("change", preferenceChange);
-      connection?.removeEventListener("change", preferenceChange);
+      element.pause();
+      document.removeEventListener("visibilitychange", update);
+      document.removeEventListener("pointerdown", update);
+      document.removeEventListener("keydown", update);
+      connection?.removeEventListener("change", update);
+      element.removeEventListener("error", error);
     };
   }, [enabled]);
   return (
@@ -202,41 +206,18 @@ function HeroMedia() {
         ref={video}
         className={`hero-video${playing ? " is-playing" : ""}`}
         poster="/media/arandanos-poster.webp"
+        autoPlay
         muted
         loop
         playsInline
         preload="none"
+        controls={false}
+        disablePictureInPicture
         aria-hidden="true"
-        onPlay={() => setPlaying(true)}
+        onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        onError={() => {
-          setUnavailable(true);
-          setPlaying(false);
-        }}
       />
       <div className="hero-shade" />
-      <div className="media-control">
-        {unavailable ? (
-          <span>Imagen de cosecha · video no disponible</span>
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              if (playing) {
-                manualPause.current = true;
-                video.current?.pause();
-              } else {
-                manualPause.current = false;
-                manualPlay.current = true;
-                void attempt();
-              }
-            }}
-          >
-            {playing ? <Pause size={15} /> : <Play size={15} />}{" "}
-            {playing ? "Pausar video" : "Reproducir video"}
-          </button>
-        )}
-      </div>
     </>
   );
 }

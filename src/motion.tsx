@@ -13,8 +13,8 @@ import {
   Droplets,
   Leaf,
   Package,
-  Pause,
-  Play,
+  Accessibility,
+  Sparkles,
   RotateCcw,
   ShieldCheck,
   Wrench,
@@ -25,7 +25,10 @@ import { currency } from "./record";
 const MotionContext = createContext({
   enabled: false,
   reduced: false,
+  overridden: false,
   toggle: () => {},
+  activate: () => {},
+  reset: () => {},
 });
 export const useMotion = () => useContext(MotionContext);
 
@@ -33,7 +36,24 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   const [reduced, setReduced] = useState(
     () => matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
-  const [paused, setPaused] = useState(false);
+  const [preference, setPreference] = useState<"auto" | "on" | "off">(() => {
+    try {
+      const stored = localStorage.getItem("agrosmart-motion");
+      return stored === "on" || stored === "off" ? stored : "auto";
+    } catch {
+      return "auto";
+    }
+  });
+  const enabled = preference === "on" || (preference === "auto" && !reduced);
+  const choose = (value: "auto" | "on" | "off") => {
+    setPreference(value);
+    try {
+      if (value === "auto") localStorage.removeItem("agrosmart-motion");
+      else localStorage.setItem("agrosmart-motion", value);
+    } catch {
+      /* La elección sigue funcionando en esta visita. */
+    }
+  };
   useEffect(() => {
     const query = matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => setReduced(query.matches);
@@ -43,15 +63,15 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   return (
     <MotionContext.Provider
       value={{
-        enabled: !reduced && !paused,
+        enabled,
         reduced,
-        toggle: () => setPaused((value) => !value),
+        overridden: preference !== "auto",
+        toggle: () => choose(enabled ? "off" : "on"),
+        activate: () => choose("on"),
+        reset: () => choose("auto"),
       }}
     >
-      <div
-        className="experience-shell"
-        data-motion={!reduced && !paused ? "on" : "off"}
-      >
+      <div className="experience-shell" data-motion={enabled ? "on" : "off"}>
         {children}
       </div>
     </MotionContext.Provider>
@@ -156,10 +176,20 @@ export function HeroExperience() {
   const { record } = useExample();
   const [scene, setScene] = useState(0);
   const [entry, setEntry] = useState(0);
-  const { enabled, reduced, toggle } = useMotion();
+  const [visible, setVisible] = useState(false);
+  const stage = useRef<HTMLDivElement>(null);
+  const { enabled, reduced, overridden, toggle, activate, reset } = useMotion();
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([item]) => setVisible(item.isIntersecting),
+      { threshold: 0.1 },
+    );
+    if (stage.current) observer.observe(stage.current);
+    return () => observer.disconnect();
+  }, []);
   const current = scenes[scene];
   return (
-    <div className="hero-experience">
+    <div className="hero-experience" ref={stage} data-visible={visible}>
       <div className="experience-caption">
         <span className="entry-leaf">
           <Leaf size={19} />
@@ -297,27 +327,32 @@ export function HeroExperience() {
         ))}
       </div>
       <div className="motion-controls">
-        <button
-          type="button"
-          onClick={toggle}
-          aria-pressed={!enabled}
-          disabled={reduced}
-        >
-          {enabled ? <Pause size={13} /> : <Play size={13} />}{" "}
-          {reduced
-            ? "Movimiento reducido del sistema"
-            : enabled
-              ? "Reducir movimiento"
-              : "Activar movimiento"}
+        <button type="button" onClick={toggle} aria-pressed={!enabled}>
+          {enabled ? <Accessibility size={14} /> : <Sparkles size={14} />}{" "}
+          {enabled ? "Reducir animaciones" : "Activar animaciones"}
         </button>
         <button
           type="button"
-          disabled={!enabled}
-          onClick={() => setEntry((value) => value + 1)}
+          onClick={() => {
+            if (!enabled) activate();
+            setEntry((value) => value + 1);
+          }}
         >
           <RotateCcw size={13} />
-          Repetir entrada
+          {enabled ? "Repetir entrada" : "Ver entrada animada"}
         </button>
+        {overridden ? (
+          <button type="button" onClick={reset}>
+            Usar ajuste del sistema
+          </button>
+        ) : (
+          reduced && (
+            <span className="motion-explanation">
+              Movimiento reducido del sistema. Puedes activar los efectos si lo
+              deseas.
+            </span>
+          )
+        )}
       </div>
     </div>
   );

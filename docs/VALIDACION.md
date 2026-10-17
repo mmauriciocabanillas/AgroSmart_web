@@ -14,21 +14,21 @@ Las operaciones, horas, gastos y permisos son ilustrativos. Se distinguen órden
 
 - Entrada escalonada del titular y composición de planos en perspectiva. Escena 3D con CSS, reacción limitada al puntero y tres vistas que cambian contenido mediante botones accesibles. No hay motor WebGL ni nueva librería de animación.
 - Entrada repetible, cambios de escena, transiciones de módulos, pasos de historia, revelado editorial y progreso de lectura. Sin desplazamiento secuestrado ni carrusel automático.
-- Las animaciones de entrada terminan; no se mantienen bucles decorativos infinitos. Video silencioso con pausa independiente.
-- Control manual para reducir movimiento y respeto desde el primer render a la preferencia del sistema. Los efectos, inclinación y desplazamiento suave se desactivan; las funciones continúan disponibles.
+- La entrada termina y quedan movimientos ambientales suaves en el terreno y la nota decorativa; se suspenden fuera de vista. El video silencioso se reproduce en bucle automáticamente sin botones de play o pausa.
+- Control manual para reducir animaciones y respeto desde el primer render a la preferencia del sistema. Ahora una elección explícita permite activar efectos aunque el sistema pida movimiento reducido: se corrigió el bloqueo del botón y las reglas CSS globales que impedían esa elección. La preferencia se conserva localmente y se puede restablecer al sistema.
 - Inspección de capturas de escritorio y móvil, registro y ampliación. Se corrigió una nota flotante para que no cubriera el enlace de la escena. La ampliación al 200 % mantiene el H1 sin recorte.
 - Capturas y grabación real de las transiciones: `docs/capturas/`. La captura usa FFmpeg de Playwright como herramienta de QA, no como recurso de la landing.
 
 ## Comprobaciones ejecutadas
 
-`npm run build`: comprobación de tipos y compilación aprobadas. Salida en `dist/`.
+`pnpm build`: comprobación de tipos y compilación aprobadas. Salida en `dist/`.
 
-`npm test`: 4 pruebas aprobadas: destino HTTP/S válido y ausente/no válido; preparación del ejemplo; rechazo de montos negativos, ambiguos o no válidos.
+`pnpm test`: 4 pruebas aprobadas: destino HTTP/S válido y ausente/no válido; preparación del ejemplo; rechazo de montos negativos, ambiguos o no válidos.
 
-`npm run test:e2e`: 26 pruebas aprobadas. Además, se repitió la prueba específica de registro después de conectar su valor a portada y Gastos.
+`pnpm test:e2e`: 26 pruebas aprobadas. Además, se repitió la prueba específica de registro después de conectar su valor a portada y Gastos.
 
 - Escena 3D por clic y teclado, repetición, mantenimiento del foco, inclinación con puntero y apagado de movimiento.
-- Preferencia del sistema desde el inicio; sin animaciones decorativas con movimiento reducido.
+- Preferencia del sistema desde el inicio; activación explícita posible, con animaciones CSS verificadas incluso bajo movimiento reducido; persistencia tras recargar y restablecimiento al sistema.
 - Registro por texto y pasos; revisión, corrección, confirmación, errores y cancelación. Un monto cambiado se conserva en Fácil y Estándar, y se refleja en portada y Gastos. Recargar restaura el ejemplo. Sin solicitudes POST.
 - Selección ilustrativa de apoyo autorizado y límites claros del permiso.
 - Exclusiones de contenido y auditoría del formulario en revisión.
@@ -40,7 +40,7 @@ Las operaciones, horas, gastos y permisos son ilustrativos. Se distinguen órden
 - FAQ por teclado y menú móvil con Escape, enlaces y foco.
 - Anchos 320, 360, 768, 1024 y 1440 px: sin desbordamiento, incluso con acciones desplegadas. Axe WCAG A/AA y WCAG 2.1 AA: cero infracciones detectadas en esos cinco anchos. También se auditó el menú abierto y el registro en revisión.
 - Ampliación CSS al 200 % en viewport de 1440 px, con acceso a las acciones. Se usan container queries para adaptar la composición; no se afirma haber probado el zoom físico en todos los navegadores.
-- Video real: reproducción, pausa persistente y pausa fuera de vista; autoplay bloqueado conserva imagen/control. Movimiento reducido o ahorro de datos evita descargarlo automáticamente.
+- Video real: autoplay, loop, muted, playsInline y ausencia de controles comprobados. Se probó el cruce del final del video y su vuelta al inicio, pausa fuera de vista y reanudación automática. Autoplay bloqueado conserva el póster sin botones. Movimiento reducido sin activación explícita o ahorro de datos evita descargarlo.
 
 Se comprobó también la salida de producción por HTTP local: carga correcta, escena seleccionable, registro corregido/confirmado y datos compartidos en Estándar, sin errores de recursos ni JavaScript.
 
@@ -48,7 +48,7 @@ Se comprobó también la salida de producción por HTTP local: carga correcta, e
 
 Sin cambios en dependencias de ejecución. La profundidad usa transformaciones CSS; el puntero y el progreso usan requestAnimationFrame solo ante eventos, sin un bucle permanente de renderizado.
 
-JS de producción: aproximadamente 280 KB (86,7 KB gzip). CSS: aproximadamente 60 KB (12,6 KB gzip). Fuentes locales latinas de 44,87 KB y 48,25 KB. Se conserva el video de 2,92 MB, 10,01 segundos, H.264 faststart sin audio, y póster WebP de 84 KB. No se incorporaron peticiones a servicios externos para demos o interpretación del texto.
+JS de producción: aproximadamente 281 KB (87,2 KB gzip). CSS: aproximadamente 60 KB (12,7 KB gzip). Fuentes locales latinas de 44,87 KB y 48,25 KB. Se conserva el video de 2,92 MB, 10,01 segundos, H.264 faststart sin audio, y póster WebP de 84 KB. No se incorporaron peticiones a servicios externos para demos o interpretación del texto.
 
 No se ejecutó Lighthouse, una auditoría manual con lector de pantalla ni una medición en teléfonos/redes físicas. La auditoría automática no sustituye pruebas de comprensión con adultos mayores.
 
@@ -57,3 +57,9 @@ No se ejecutó Lighthouse, una auditoría manual con lector de pantalla ni una m
 Configurar la URL real de la aplicación y elegir alojamiento/dominio. La interpretación por texto es deliberadamente acotada al ejemplo y montos numéricos; los casos ambiguos piden corrección o pasos guiados, no se presentan como IA general. El dictado se comunica como previsto para la app. La calidad real de la lectura de voz depende de las voces instaladas y no fue evaluada auditivamente.
 
 Pruebas con productores y adultos mayores, beneficios económicos, autorización real, recuperación de registros sin conexión e integración con controladores pertenecen a la implementación y a pilotos. Esta landing no los valida ni los promete como operativos.
+
+## Corrección de instalación y preparación para Vercel
+
+Se sustituyó el valor de texto inválido de allowBuilds por ffmpeg-static: false: el binario no se necesita para ejecutar ni compilar la web y el MP4 final está incluido. Se retiró package-lock.json, conservando pnpm-lock.yaml. Se fijaron pnpm 11.19.0 y Node 24.x, con comandos versionados de instalación/build en vercel.json.
+
+Verificaciones de esta corrección: pnpm install --frozen-lockfile completó con código 0 sin ERR_PNPM_IGNORED_BUILDS; las 4 pruebas de lógica y 26 de navegador pasaron. Se verificó además la instalación con el ejecutor npx fijado en vercel.json. No se ha publicado un despliegue ni se han modificado preferencias del sistema.

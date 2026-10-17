@@ -244,11 +244,9 @@ test("movimiento reducido y ahorro de datos evitan la descarga automática", asy
     if (req.url().endsWith(".mp4")) requests.push(req.url());
   });
   await page.goto("/");
-  await expect(
-    page.getByRole("button", { name: "Reproducir video" }),
-  ).toBeVisible();
-  expect(requests).toEqual([]);
   expect(await page.locator("video").getAttribute("src")).toBeNull();
+  await expect(page.locator(".media-control")).toHaveCount(0);
+  expect(requests).toEqual([]);
   await page.goto("about:blank");
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.addInitScript(() => {
@@ -261,13 +259,11 @@ test("movimiento reducido y ahorro de datos evitan la descarga automática", asy
     });
   });
   await page.goto("/");
-  await expect(
-    page.getByRole("button", { name: "Reproducir video" }),
-  ).toBeVisible();
+  expect(await page.locator("video").getAttribute("src")).toBeNull();
   expect(requests).toEqual([]);
 });
 
-test("autoplay bloqueado conserva póster y permite reproducción explícita", async ({
+test("autoplay bloqueado conserva póster sin botones de video", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -279,39 +275,67 @@ test("autoplay bloqueado conserva póster y permite reproducción explícita", a
   await page.goto("/");
   await expect(page.locator(".hero-poster")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Reproducir video" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Reproducir video" }).click();
-  await expect(page.locator(".hero-poster")).toBeVisible();
-});
-
-test("video real reproduce, respeta pausa y se pausa fuera de vista", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/");
-  await expect(
-    page.getByRole("button", { name: "Pausar video" }),
-  ).toBeVisible();
-  expect(
-    await page.locator("video").evaluate((v: HTMLVideoElement) => v.videoWidth),
-  ).toBe(1280);
-  await page.getByRole("button", { name: "Pausar video" }).click();
-  await page.locator("#facil").scrollIntoViewIfNeeded();
-  await page.locator("#inicio").scrollIntoViewIfNeeded();
-  expect(
-    await page.locator("video").evaluate((v: HTMLVideoElement) => v.paused),
-  ).toBe(true);
-  await page.getByRole("button", { name: "Reproducir video" }).click();
-  await expect(
-    page.getByRole("button", { name: "Pausar video" }),
-  ).toBeVisible();
-  await page.locator("#facil").scrollIntoViewIfNeeded();
+    page.getByRole("button", { name: /Reproducir video|Pausar video/ }),
+  ).toHaveCount(0);
   await expect
     .poll(() =>
       page.locator("video").evaluate((v: HTMLVideoElement) => v.paused),
     )
     .toBe(true);
+  await expect(page.locator("video")).not.toHaveClass(/is-playing/);
+});
+
+test("video automático en bucle sin controles, pausa fuera de vista y reanuda al volver", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const video = page.locator("video");
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(false);
+  expect(
+    await video.evaluate((v: HTMLVideoElement) => ({
+      width: v.videoWidth,
+      loop: v.loop,
+      muted: v.muted,
+      autoplay: v.autoplay,
+      inline: v.playsInline,
+      controls: v.controls,
+    })),
+  ).toEqual({
+    width: 1280,
+    loop: true,
+    muted: true,
+    autoplay: true,
+    inline: true,
+    controls: false,
+  });
+  await expect(page.locator(".media-control")).toHaveCount(0);
+  await video.evaluate((v: HTMLVideoElement) => {
+    v.currentTime = v.duration - 0.15;
+  });
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime), {
+      timeout: 7000,
+    })
+    .toBeLessThan(1);
+  await page.locator("#facil").scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(true);
+  await page.locator("#inicio").scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(false);
+  await page.getByRole("button", { name: "Reducir animaciones" }).click();
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(true);
+  await page.getByRole("button", { name: "Activar animaciones" }).click();
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(false);
 });
 
 test("zoom al 200% conserva lectura y acceso a las funciones", async ({
