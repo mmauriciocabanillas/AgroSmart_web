@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="furrows" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(-24)"><path d="M0 0v26" stroke="#80a964" stroke-width="12"/></pattern>
+    <clipPath id="land"><path d="M620 80 1150 0l50 550-500 80-160-300Z"/></clipPath>
+  </defs>
+  <rect width="1200" height="630" fill="#143d2b"/>
+  <g clip-path="url(#land)">
+    <path d="M500 0h700v630H500Z" fill="#294e34"/>
+    <path d="M500 0h700v630H500Z" fill="url(#furrows)"/>
+    <path d="m500 360 700-180M800-20l-20 650" stroke="#eaf4d9" stroke-width="20" fill="none"/>
+    <path d="m835 355 310-75 20 240-320 65Z" fill="#a3e635" fill-opacity=".4" stroke="#eaf4d9" stroke-width="3"/>
+    <circle cx="1000" cy="420" r="42" fill="#4656a6"/>
+    <path d="m1000 401 6 12 14-2-9 11 6 13-17-7-15 7 4-13-9-11 14 2Z" fill="#b6bfe6"/>
+  </g>
+  <path d="M120 170c180-30 290 35 260 167-145 35-250-20-260-167Z" fill="#a3e635"/>
+  <path d="m130 420 215-200M140 480h230" fill="none" stroke="#a3e635" stroke-width="16" stroke-linecap="round"/>
+</svg>
