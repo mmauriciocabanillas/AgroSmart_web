@@ -1,6 +1,6 @@
 # AgroSmart · web de presentación
 
-Segunda versión local: autonomía del productor, recursos cotidianos y presentación interactiva con profundidad 3D. React 19.3.1, TypeScript 7.0.2 y Vite 8.3.4. Node.js 24.x y pnpm 11.19.0 fijados en package.json. Se conserva solo pnpm-lock.yaml como lockfile.
+Web de presentación local: autonomía del productor, recursos cotidianos y presentación interactiva con profundidad 3D. React 19.3.1, TypeScript 7.0.2 y Vite 8.3.4. Node.js 24.x y pnpm 11.19.0 fijados en package.json. Se conserva solo pnpm-lock.yaml como lockfile.
 
 ## Abrir y desarrollar
 
@@ -22,7 +22,7 @@ Copia `.env.example` a `.env.local` y define una sola variable:
 VITE_APP_URL=
 ```
 
-Coloca la URL real HTTP/S cuando exista y reinicia Vite; para producción vuelve a compilar. Sin una URL válida, los tres CTA muestran un diálogo con acceso a la demostración. Todos usan la misma configuración y abren el destino en la misma pestaña. No incluir tokens, credenciales ni datos personales en esta variable, que es pública en el frontend. No se agregan parámetros para Fácil.
+Coloca la URL real HTTP/S cuando exista y reinicia Vite; para producción vuelve a compilar. Sin una URL válida, los tres CTA muestran un diálogo con el enlace «Conocer AgroSmart». Todos usan la misma configuración y abren el destino en la misma pestaña. No incluir tokens, credenciales ni datos personales en esta variable, que es pública en el frontend. No se agregan parámetros para Fácil.
 
 ## Generar la versión final
 
@@ -59,7 +59,7 @@ El segundo servidor de pruebas (puerto 5174) usa temporalmente `https://example.
 
 Resultados y límites de verificación: `docs/VALIDACION.md`. Registro de recursos y licencias: `docs/FUENTES_Y_LICENCIAS.md`. El paquete original extraído se conserva en `AgroSmart_Inicio/` y sus capturas no se incluyen en la web.
 
-El texto de reorientación más reciente se conserva en `docs/BRIEF_ACTUALIZADO.md`. Sustituye la narrativa del paquete inicial. La landing ya no presenta estadísticas, satélites ni trazabilidad como argumento. Los registros de la demo viven solo en memoria y se pierden al recargar; el monto confirmado se comparte entre las vistas Fácil y Estándar.
+El texto de reorientación más reciente se conserva en `docs/BRIEF_ACTUALIZADO.md`. Sustituye la narrativa del paquete inicial. La landing ya no presenta estadísticas, satélites ni trazabilidad como argumento. Los registros de esta página viven solo en memoria y se pierden al recargar; el monto confirmado se comparte entre las vistas Fácil y Estándar.
 
 Para revisar la animación, abre la portada, explora “Mi día / Mis recursos / Un aviso” y mueve el puntero sobre la escena. “Repetir entrada” reproduce su llegada. “Reducir animaciones” desactiva los efectos y el video. Si el sistema solicita movimiento reducido, se respeta desde el inicio. El botón “Activar animaciones” permite elegir expresamente ver los efectos. La elección se conserva en localStorage; “Usar ajuste del sistema” la borra. “Ver entrada animada” también permite activar y reproducir la entrada. No se cambian ajustes de Windows.
 
@@ -102,4 +102,4 @@ Se incluye vercel.json con preset Vite, salida dist y comandos que ejecutan pnpm
 
 Usa la raíz del repositorio como Root Directory. La instalación usa pnpm install --frozen-lockfile y el build pnpm build, a través del ejecutor versionado del manifiesto. Se verificaron localmente esos mismos comandos y la salida estática; un despliegue real en Vercel necesita sus propios logs de éxito.
 
-VITE_APP_URL puede configurarse en las variables del proyecto en Vercel. Sin esa variable, los accesos continúan mostrando el diálogo de demostración.
+VITE_APP_URL puede configurarse en las variables del proyecto en Vercel. Sin esa variable, los accesos continúan mostrando el diálogo de acceso.

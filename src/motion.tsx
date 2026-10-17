@@ -214,7 +214,7 @@ export function HeroExperience() {
                 <i />
               </span>
               <span>AgroSmart Fácil</span>
-              <span className="scene-example">Ejemplo</span>
+              <span className="scene-example">Vista Fácil</span>
             </div>
             <div
               className="scene-content"
@@ -222,9 +222,7 @@ export function HeroExperience() {
               aria-live="polite"
               aria-atomic="true"
             >
-              <span className="scene-kicker">
-                SECTOR C · ARÁNDANO · DATOS ILUSTRATIVOS
-              </span>
+              <span className="scene-kicker">SECTOR C · ARÁNDANO</span>
               <strong className="scene-title">{current.title}</strong>
               <p>{current.subtitle}</p>
               {scene === 0 && (
@@ -246,7 +244,7 @@ export function HeroExperience() {
                       Gasto de {record.category.toLowerCase()}
                       <strong>{currency(record.amount)}</strong>
                     </span>
-                    <span className="scene-chip neutral">Ejemplo</span>
+                    <span className="scene-chip neutral">Vista Fácil</span>
                   </div>
                   <div className="scene-plain">
                     <ShieldCheck size={17} />
@@ -283,16 +281,13 @@ export function HeroExperience() {
                   <CircleAlert size={23} />
                   <div>
                     <strong>La operación está detenida.</strong>
-                    <p>
-                      Confirmado por el controlador ficticio. La causa sigue
-                      pendiente.
-                    </p>
+                    <p>Estado: operación detenida. La causa sigue pendiente.</p>
                     <span>Lo siguiente: pedir revisar el filtro.</span>
                   </div>
                 </div>
               )}
               <div className="scene-update">
-                <span>Último estado del ejemplo: 10:42</span>
+                <span>Datos ilustrativos · 10:42</span>
                 <a href="#facil">
                   Abrir vista guiada <ArrowUpRight size={15} />
                 </a>

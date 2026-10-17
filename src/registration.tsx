@@ -95,20 +95,19 @@ export function RecordDemo() {
           <div className="voice-note">
             <Mic size={21} />
             <p>
-              La voz será opcional en la aplicación. Dependerá del dispositivo,
-              el idioma y la conectividad. Aquí puedes probar texto y pasos, sin
-              usar micrófono.
+              Registra por texto o con pasos guiados. Puedes escuchar los avisos
+              desde la vista Fácil, según las voces disponibles en tu navegador.
             </p>
           </div>
           <p className="privacy-example">
-            <ShieldCheck size={15} /> Ejemplo local. No se envían ni conservan
-            tus datos al recargar.
+            <ShieldCheck size={15} /> Tus registros permanecen durante esta
+            visita y se eliminan al recargar. No se envían a una cuenta.
           </p>
         </div>
         <div className="record-demo reveal">
           <div className="record-demo-top">
-            <span>PRUÉBALO CON UN EJEMPLO</span>
-            <span className="demo-label">Demostración</span>
+            <span>PREPARA TU REGISTRO</span>
+            <span className="demo-label">Registro guiado</span>
           </div>
           {!review && !saved && (
             <>
@@ -169,8 +168,8 @@ export function RecordDemo() {
                     aria-describedby="text-example-help"
                   />
                   <p id="text-example-help" className="record-help">
-                    Esta demo reconoce el ejemplo y montos numéricos. La
-                    interpretación es limitada: revisa siempre el resultado.
+                    Escribe un monto en números, como “80 soles”. Revisa y
+                    corrige los datos antes de confirmar.
                   </p>
                   {error && (
                     <p role="alert" className="record-error">
@@ -230,7 +229,7 @@ export function RecordDemo() {
                 setSaved(true);
                 requestAnimationFrame(() => successHeading.current?.focus());
                 setNotice(
-                  "Registro confirmado solo en esta demostración. Puedes verlo en Fácil y Estándar.",
+                  "Registro confirmado durante esta visita. Puedes verlo en Fácil y Estándar; se elimina al recargar.",
                 );
               }}
             >
@@ -259,7 +258,7 @@ export function RecordDemo() {
               <div className="record-confirm">
                 <button type="submit" className="button dark">
                   <Check size={18} />
-                  Confirmar en la demo
+                  Confirmar registro
                 </button>
                 <button
                   type="button"
@@ -295,7 +294,7 @@ export function RecordDemo() {
               <p>
                 {concept} · {category}
                 <br />
-                Solo en esta demostración.
+                Disponible durante esta visita.
               </p>
               <a className="button dark" href="#facil">
                 Verlo en Fácil y Estándar <ArrowRight size={18} />
@@ -310,7 +309,7 @@ export function RecordDemo() {
                 }}
               >
                 <RotateCcw size={16} />
-                Preparar otro ejemplo
+                Registrar otro gasto
               </button>
             </div>
           )}
@@ -385,9 +384,7 @@ export function SharedExpense() {
   return (
     <div className="shared-expense">
       <span>
-        {confirmed
-          ? "Confirmado por ti en esta demo"
-          : "Gasto ilustrativo de mantenimiento"}
+        {confirmed ? "Registro confirmado por ti" : "Gasto de mantenimiento"}
       </span>
       <strong>{currency(record.amount)}</strong>
       <p>
@@ -417,20 +414,18 @@ export function SupportSection() {
           </h2>
           <p>
             Un familiar, un técnico o un colaborador puede acompañarte cuando lo
-            decidas. La propuesta permite definir qué puede ver y hacer; cada
-            acción queda identificada.
+            decidas. Los permisos definen qué puede consultar o hacer cada
+            persona, con las acciones identificadas.
           </p>
           <p>La ayuda es una opción. La decisión sigue siendo tuya.</p>
         </div>
         <div className="permission-demo reveal">
-          <span className="demo-label">
-            Ejemplo de permisos · no comparte datos
-          </span>
+          <span className="demo-label">Permisos por rol</span>
           <h3>Una tarea, un permiso claro.</h3>
           <div
             className="permission-roles"
             role="group"
-            aria-label="Ejemplo de persona de apoyo"
+            aria-label="Persona de apoyo"
           >
             {["Familiar", "Técnico", "Colaborador"].map((value) => (
               <button
@@ -446,7 +441,7 @@ export function SupportSection() {
           <div className="permission-detail" key={role}>
             <UserRoundCheck size={30} />
             <div>
-              <strong>{role} autorizado</strong>
+              <strong>{role} · alcance del apoyo</strong>
               <p>
                 {role === "Familiar"
                   ? "Puede ayudarte a revisar los registros que decidas compartir."
@@ -458,7 +453,7 @@ export function SupportSection() {
           </div>
           <p className="permission-limit">
             <ShieldCheck size={17} />
-            Este permiso de ejemplo no autoriza poner equipos en marcha.
+            El permiso de apoyo no autoriza poner equipos en marcha.
           </p>
         </div>
       </div>

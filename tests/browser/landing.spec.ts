@@ -38,9 +38,12 @@ test("todos los CTA sin destino abren diálogo y recuperan foco", async ({
     await cta.click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(
-      page.getByText("La aplicación aún no tiene una dirección configurada.", {
-        exact: false,
-      }),
+      page.getByText(
+        "El acceso a la aplicación no está habilitado desde esta página.",
+        {
+          exact: false,
+        },
+      ),
     ).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(cta).toBeFocused();
@@ -50,7 +53,7 @@ test("todos los CTA sin destino abren diálogo y recuperan foco", async ({
     .getByRole("button", { name: "Entrar a AgroSmart" })
     .click();
   await page
-    .getByRole("link", { name: "Ver demostración", exact: true })
+    .getByRole("link", { name: "Conocer AgroSmart", exact: true })
     .click();
   await expect(page.locator(".app-dialog")).not.toBeVisible();
   await expect(
@@ -154,6 +157,9 @@ test("voz disponible se inicia solo por pulsación y sin micrófono", async ({
   await page.getByRole("button", { name: "Escuchar aviso" }).click();
   expect(await page.evaluate(() => (window as any).__spoken)).toContain(
     "Sector C",
+  );
+  expect(await page.evaluate(() => (window as any).__spoken)).not.toMatch(
+    /demo|demostraci[oó]n|prototipo|fictici|muestra/i,
   );
   await expect(page.locator(".speech-status")).toContainText("Escuchando");
 });

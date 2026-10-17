@@ -6,9 +6,9 @@ export const modules = [
     description:
       "Consulta qué está funcionando, qué terminó y qué necesita atención. Primero un mensaje claro; el detalle, cuando lo necesites.",
     icon: "scan",
-    label: "Estado recibido en el ejemplo",
+    label: "Estado de la operación",
     value: "Necesita revisión",
-    detail: "Sector C · última actualización ilustrativa: 10:42.",
+    detail: "Sector C · actualización: 10:42.",
     note: "Distingue el último estado recibido de lo que aún no está confirmado. Una lectura aislada no explica por sí sola una falla.",
   },
   {
@@ -18,7 +18,7 @@ export const modules = [
     description:
       "Con infraestructura compatible y configuración validada, autoriza reglas y supervisa operaciones. Recibe un aviso cuando algo se sale de esos límites.",
     icon: "water",
-    label: "Confirmado por el controlador ficticio",
+    label: "Estado confirmado por el controlador",
     value: "Operación detenida",
     detail: "Reinicio sin autorizar · revisar antes de continuar.",
     note: "Una orden enviada no prueba que el equipo haya actuado. La verificación y las protecciones dependen también del controlador y de la instalación local.",
@@ -42,17 +42,17 @@ export const modules = [
     description:
       "Revisa los gastos de agua, energía, materiales, mantenimiento y trabajo. Identifica qué información está completa y qué falta por registrar.",
     icon: "chart",
-    label: "Mantenimiento · dato ilustrativo",
+    label: "Mantenimiento",
     value: "S/ 80,00",
     detail: "Reparación de bomba · otros gastos pendientes de registrar.",
-    note: "Un gasto registrado no es una rentabilidad calculada. Los beneficios económicos del prototipo todavía deben medirse.",
+    note: "Los gastos registrados muestran el uso de tus recursos. Para evaluar resultados económicos, reúne los ingresos y costos de la campaña.",
   },
 ] as const;
 export const steps = [
   {
     verb: "Registra",
     title: "Tus palabras, un registro claro.",
-    text: "“Hoy pagué ochenta soles por reparar la bomba”. El ejemplo prepara un gasto de S/ 80,00 en mantenimiento. Revisas lo que entendió, corriges si hace falta y confirmas antes de guardar.",
+    text: "“Hoy pagué ochenta soles por reparar la bomba”. Preparas un gasto de S/ 80,00 en mantenimiento. Revisas lo que entendió, corriges si hace falta y confirmas antes de guardar.",
     module: "Registro sencillo",
     status: "Revisar antes de confirmar",
     icon: "list",
@@ -68,9 +68,9 @@ export const steps = [
   {
     verb: "Comprende",
     title: "Un problema, explicado.",
-    text: "Se detecta bajo caudal. La protección local configurada actúa y el controlador ficticio confirma la detención. Una orden enviada, por sí sola, no habría bastado para confirmarla.",
+    text: "Ante una baja de caudal, la protección local configurada actúa. El aviso distingue una detención confirmada por el controlador de una verificación todavía pendiente. Enviar una orden no basta para confirmar su ejecución.",
     module: "Protección y aviso",
-    status: "Detención confirmada en el ejemplo",
+    status: "Detención confirmada",
     icon: "shield",
   },
   {
@@ -84,7 +84,7 @@ export const steps = [
   {
     verb: "Asigna",
     title: "Ayuda, con tu autorización.",
-    text: "Asignas la inspección a un colaborador previamente autorizado para tareas de campo. Tú eliges ese permiso. Este ejemplo no invita a ninguna persona ni comparte información fuera de la página.",
+    text: "Asignas la inspección a un colaborador previamente autorizado para tareas de campo. Tú eliges ese permiso. El permiso debe definir qué puede consultar y hacer cada persona.",
     module: "Trabajos y permisos",
     status: "Revisión asignada",
     icon: "list",
@@ -92,7 +92,7 @@ export const steps = [
   {
     verb: "Revisa",
     title: "Puedes reconstruir lo ocurrido.",
-    text: "Consultas el trabajo realizado, quién lo registró y el gasto de mantenimiento de S/ 80,00 del ejemplo. Los otros gastos siguen pendientes. Reiniciar requiere condiciones seguras y una nueva autorización.",
+    text: "Consultas el trabajo realizado, quién lo registró y el gasto de mantenimiento de S/ 80,00 del registro. Los otros gastos siguen pendientes. Reiniciar requiere condiciones seguras y una nueva autorización.",
     module: "Historial comprensible",
     status: "Trabajo revisado · gasto registrado",
     icon: "check",
@@ -101,7 +101,7 @@ export const steps = [
 export const faqs = [
   [
     "¿Necesito saber de tecnología?",
-    "No necesitas convertirte en experto. AgroSmart Fácil guía el diseño inicial con lenguaje cotidiano, botones grandes y pocos pasos. Es una propuesta en desarrollo que aún debemos validar con productores y adultos mayores.",
+    "AgroSmart Fácil utiliza lenguaje cotidiano, botones grandes y recorridos de pocos pasos. Puedes consultar cada aviso y avanzar a tu ritmo, con mayor detalle en Estándar cuando lo necesites.",
   ],
   [
     "¿Tengo que comprar sensores para empezar?",
@@ -109,19 +109,19 @@ export const faqs = [
   ],
   [
     "¿Puedo registrar información sin utilizar mi voz?",
-    "Sí. La propuesta incluye texto y formularios guiados. La voz es opcional y su disponibilidad depende del dispositivo, el idioma y la conectividad. Esta web permite probar el registro por texto y pasos, sin pedir micrófono.",
+    "Sí. Usa texto o formularios guiados para preparar y revisar tus registros. La lectura de avisos es opcional y depende de las voces disponibles en tu navegador; no necesitas activar un micrófono.",
   ],
   [
     "¿Puede ayudarme una persona de confianza?",
-    "Sí, cuando tú lo autorices. Podrás decidir qué puede consultar o hacer un familiar, técnico o colaborador. Las acciones deben quedar identificadas. La ayuda es opcional y no sustituye tu decisión.",
+    "Sí, cuando tú lo autorices. Tú decides qué puede consultar o hacer un familiar, técnico o colaborador. Las acciones quedan identificadas. La ayuda es opcional y no sustituye tu decisión.",
   ],
   [
     "¿Qué ocurre si pierdo conexión?",
-    "La recuperación de registros depende de la implementación de la aplicación. Esta demo guarda sus cambios solo en memoria y se reinicia al recargar. Una app desconectada no puede garantizar comandos remotos. El controlador y las protecciones locales deben mantener la seguridad del equipo.",
+    "El control remoto requiere conexión. El controlador y las protecciones locales deben mantener la seguridad del equipo. Los registros que preparas en esta página duran durante tu visita y se eliminan al recargar; no se guardan en una cuenta.",
   ],
   [
     "¿Cómo ingreso a la aplicación?",
-    "Usa “Entrar a AgroSmart”. Si la dirección aún no está configurada, verás un aviso con acceso a esta demostración. La autenticación corresponde a la aplicación destino.",
+    "Usa “Entrar a AgroSmart”. Si el acceso no está habilitado desde esta página, el aviso te permite seguir explorando sus funciones. El ingreso a tu cuenta se realiza en la aplicación.",
   ],
   [
     "¿Puede poner en marcha cualquier bomba?",
@@ -137,7 +137,7 @@ export const demo = {
     "El caudal está por debajo del valor de referencia. La causa todavía no está confirmada.",
   next: "Pide al responsable revisar el filtro antes de autorizar el reinicio.",
   speech:
-    "Aviso de demostración. Sector C. El caudal está por debajo del valor de referencia. El controlador ficticio confirmó la detención, después de aplicar la protección local configurada. La causa todavía no está confirmada. Pide al responsable revisar el filtro antes de autorizar el reinicio.",
+    "Aviso del Sector C. El caudal está por debajo del valor de referencia. La operación está detenida por la protección local configurada. La causa todavía no está confirmada. Pide al responsable revisar el filtro antes de autorizar el reinicio.",
 };
 export const capabilities: Record<string, string[]> = {
   monitor: [

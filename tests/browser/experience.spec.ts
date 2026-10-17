@@ -134,9 +134,9 @@ test("registro se revisa y corrige antes de compartirlo entre Fácil y Estándar
   await page
     .getByLabel("¿En qué lo usaste?")
     .fill("Revisión y reparación de bomba");
-  await page.getByRole("button", { name: "Confirmar en la demo" }).click();
+  await page.getByRole("button", { name: "Confirmar registro" }).click();
   await expect(page.locator(".record-notice")).toContainText(
-    "Registro confirmado solo en esta demostración",
+    "Registro confirmado durante esta visita",
   );
   await expect(page.locator(".record-success h3")).toBeFocused();
   const demo = page.locator(".easy-demo");
@@ -154,7 +154,7 @@ test("registro se revisa y corrige antes de compartirlo entre Fácil y Estándar
   await page.reload();
   await expect(demo.locator(".shared-expense")).toContainText("80.00");
   await expect(demo.locator(".shared-expense")).toContainText(
-    "Gasto ilustrativo",
+    "Gasto de mantenimiento",
   );
 });
 
@@ -177,7 +177,7 @@ test("errores de registro explican cómo continuar; pasos guiados permiten recup
   await page.getByRole("button", { name: "Revisar antes de guardar" }).click();
   await page.getByRole("button", { name: "Volver sin guardar" }).click();
   await expect(page.locator(".easy-demo .shared-expense")).toContainText(
-    "Gasto ilustrativo",
+    "Gasto de mantenimiento",
   );
 });
 
@@ -213,4 +213,65 @@ test("nueva narrativa y formulario revisado conservan accesibilidad", async ({
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
   expect(result.violations).toEqual([]);
+});
+
+test("la presentación y sus estados no usan etiquetas de demo o prototipo", async ({
+  page,
+}) => {
+  const assertPublicCopy = async () => {
+    const copy = await page.evaluate(() => {
+      const root = document.body.cloneNode(true) as HTMLElement;
+      root.querySelectorAll("script, style").forEach((node) => node.remove());
+      const labels = [...root.querySelectorAll("*")].flatMap((node) =>
+        ["aria-label", "alt", "title", "placeholder"].map(
+          (attr) => node.getAttribute(attr) || "",
+        ),
+      );
+      return [root.textContent, ...labels].join(" ");
+    });
+    expect(copy).not.toMatch(
+      /\b(?:demo|demos|demostraci[oó]n|demostraciones|prototipos?|ejemplos?|muestras?|simulad[oa]s?|fictici[oa]s?)\b/i,
+    );
+  };
+  await page.goto("/");
+  await assertPublicCopy();
+  for (const name of ["Mi día", "Mis recursos", "Un aviso"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await assertPublicCopy();
+  }
+  for (const name of ["Consulta", "Supervisa", "Organiza", "Gastos"]) {
+    await page.getByRole("tab", { name, exact: true }).click();
+    await assertPublicCopy();
+  }
+  const steps = page.getByRole("group", { name: "Pasos de gestión" });
+  for (const button of await steps.getByRole("button").all()) {
+    await button.click();
+    await assertPublicCopy();
+  }
+  for (const name of ["Estándar", "Fácil"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await assertPublicCopy();
+  }
+  for (const name of ["Ver mi campo", "Ver qué hacer"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await assertPublicCopy();
+  }
+  for (const name of ["Familiar", "Técnico", "Colaborador"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await assertPublicCopy();
+  }
+  await page
+    .getByRole("button", { name: "Preparar registro", exact: true })
+    .click();
+  await assertPublicCopy();
+  await page
+    .getByRole("button", { name: "Confirmar registro", exact: true })
+    .click();
+  await assertPublicCopy();
+  await expect(page.locator(".privacy-example")).toContainText(
+    "se eliminan al recargar",
+  );
+  await expect(page.locator(".demo-footnote")).toContainText(
+    "Datos ilustrativos",
+  );
 });

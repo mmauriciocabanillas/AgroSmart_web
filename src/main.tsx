@@ -318,9 +318,7 @@ function OperationOverview({ moduleId }: { moduleId: string }) {
     return (
       <div className="operation-overview">
         <SharedExpense />
-        <p>
-          Agua, energía y materiales: todavía faltan registros en este ejemplo.
-        </p>
+        <p>Agua, energía y materiales: pendientes de registrar.</p>
       </div>
     );
   const rows =
@@ -344,7 +342,7 @@ function OperationOverview({ moduleId }: { moduleId: string }) {
   return (
     <div className="operation-overview">
       <span className="overview-example">
-        Resumen ilustrativo · no es un estado en vivo
+        Datos ilustrativos · sin conexión a equipos
       </span>
       {rows.map(([label, value], index) => (
         <div className="overview-row" key={label}>
@@ -379,9 +377,9 @@ function Platform() {
             <span>El control sigue siendo tuyo.</span>
           </h2>
           <p>
-            Organiza agua, equipos, materiales, trabajos y gastos. Una propuesta
-            para comprender y manejar tus recursos sin convertirte en experto en
-            tecnología.
+            Organiza agua, equipos, materiales, trabajos y gastos con una
+            gestión que puedes comprender y manejar, sin convertirte en experto
+            en tecnología.
           </p>
         </div>
         <div
@@ -451,7 +449,7 @@ function Platform() {
           <div className="dashboard">
             <div className="dash-top">
               <Logo />
-              <span>Vista de demostración</span>
+              <span>Gestión de recursos</span>
             </div>
             <div className="dash-body" key={current.id}>
               <div className="dash-title">
@@ -459,14 +457,14 @@ function Platform() {
                   <span className="micro">TUS RECURSOS / SECTOR C</span>
                   <h4>Todo en su lugar.</h4>
                 </div>
-                <span className="demo-label">Ejemplo</span>
+                <span className="demo-label">Mi campo</span>
               </div>
               <OperationOverview moduleId={current.id} />
               <div className="dash-metrics">
                 <div>
                   <span>
                     {current.id === "economia"
-                      ? `${record.category} · dato ilustrativo`
+                      ? record.category
                       : current.label}
                   </span>
                   <strong>
@@ -502,9 +500,9 @@ function Story() {
   const current = steps[step];
   const explanation =
     step === 0 && confirmed
-      ? `En el registro que probaste confirmaste ${currency(record.amount)} por ${record.concept.toLowerCase()}. Revisaste el tipo de gasto y el monto antes de guardar. Esos mismos datos aparecen en Fácil y Estándar.`
+      ? `En tu registro confirmaste ${currency(record.amount)} por ${record.concept.toLowerCase()}. Revisaste el tipo de gasto y el monto antes de guardar. Esos mismos datos aparecen en Fácil y Estándar.`
       : step === 5
-        ? `Consultas el trabajo realizado, quién lo registró y el gasto de ${record.category.toLowerCase()} de ${currency(record.amount)} del ejemplo. Los otros gastos siguen pendientes. Reiniciar requiere condiciones seguras y una nueva autorización.`
+        ? `Consultas el trabajo realizado, quién lo registró y el gasto de ${record.category.toLowerCase()} de ${currency(record.amount)} del registro. Los otros gastos siguen pendientes. Reiniciar requiere condiciones seguras y una nueva autorización.`
         : current.text;
   return (
     <section id="como-funciona" className="story section">
@@ -521,14 +519,10 @@ function Story() {
           <p>
             El valor está en unir las piezas.
             <br />
-            Recorre el ejemplo a tu ritmo.
+            Conoce el recorrido a tu ritmo.
           </p>
         </div>
-        <div
-          className="story-steps"
-          role="group"
-          aria-label="Pasos del ejemplo"
-        >
+        <div className="story-steps" role="group" aria-label="Pasos de gestión">
           {steps.map((s, index) => (
             <button
               key={s.verb}
@@ -553,7 +547,7 @@ function Story() {
             }
           >
             <span className="demo-label">
-              Ejemplo de funcionamiento · simulado
+              Sector C · gestión de una incidencia
             </span>
             <div className="flow-diagram" aria-hidden="true">
               <div className="flow-ring">
@@ -583,7 +577,7 @@ function Story() {
             <p>{explanation}</p>
             {step === 0 && (
               <a className="text-link story-try" href="#registro">
-                Probar un registro <ArrowUpRight size={17} />
+                Preparar un registro <ArrowUpRight size={17} />
               </a>
             )}
           </div>
@@ -656,7 +650,7 @@ function EasyDemo() {
       );
     try {
       window.speechSynthesis.speak(speech);
-      setSpeechStatus("Escuchando aviso de demostración…");
+      setSpeechStatus("Escuchando aviso…");
     } catch {
       setSpeechStatus(
         "No se pudo reproducir la voz. Puedes leer el aviso completo debajo.",
@@ -677,10 +671,9 @@ function EasyDemo() {
             </span>
           </h2>
           <p>
-            AgroSmart Fácil guía el diseño desde el inicio: lenguaje cotidiano,
-            botones grandes y pocos pasos por tarea. Pensado especialmente para
-            adultos mayores, sin excluir a quienes prefieren una experiencia
-            sencilla.
+            AgroSmart Fácil reúne lenguaje cotidiano, botones grandes y pocos
+            pasos por tarea. Pensado especialmente para adultos mayores, sin
+            excluir a quienes prefieren una experiencia sencilla.
           </p>
           <p>
             Estándar ofrece más detalle. Cambia la presentación, conservando la
@@ -702,19 +695,20 @@ function EasyDemo() {
             </li>
           </ul>
           <p className="easy-invitation">
-            Pruébalo aquí <ArrowRight size={19} />
+            Elige tu vista <ArrowRight size={19} />
           </p>
           <small>
-            Demostración pública. El selector cambia solo esta vista.
+            Elige la vista que te resulte más cómoda. El cambio conserva el
+            contexto y los datos.
             <br />
-            El dictado de voz es una capacidad prevista de la aplicación.
+            Escucha los avisos con la lectura de voz disponible en tu navegador.
           </small>
         </div>
         <div className="easy-demo-wrap reveal">
           <div
             className="view-toggle"
             role="group"
-            aria-label="Presentación de la demostración"
+            aria-label="Vista de AgroSmart"
           >
             <button
               type="button"
@@ -741,7 +735,7 @@ function EasyDemo() {
           <div className={`easy-demo ${easy ? "simple" : "standard"}`}>
             <div className="easy-demo-header">
               <Logo />
-              <span className="demo-label">Demostración</span>
+              <span className="demo-label">Mi campo</span>
             </div>
             <div className="demo-body">
               <div className="demo-greeting">
@@ -766,19 +760,19 @@ function EasyDemo() {
                 </div>
               </div>
               <details className="technical-readings" open={!easy}>
-                <summary>Ver datos del ejemplo</summary>
+                <summary>Ver datos de la operación</summary>
                 <div className="reading">
                   <span>
-                    Caudal ilustrativo<strong>{demo.flow}</strong>
+                    Caudal registrado<strong>{demo.flow}</strong>
                   </span>
                   <span>
-                    Referencia ilustrativa<strong>{demo.reference}</strong>
+                    Valor de referencia<strong>{demo.reference}</strong>
                   </span>
                 </div>
               </details>
               <p className="protection">
-                <ShieldCheck size={17} /> Detención confirmada por el
-                controlador ficticio · ejemplo de las 10:42.
+                <ShieldCheck size={17} /> Estado registrado: operación detenida
+                · 10:42.
               </p>
               <SharedExpense />
               {easy ? (
@@ -816,7 +810,7 @@ function EasyDemo() {
                   <div>
                     <ClipboardList size={20} />
                     <span>
-                      Tarea propuesta<strong>Inspeccionar filtro</strong>
+                      Trabajo pendiente<strong>Inspeccionar filtro</strong>
                     </span>
                   </div>
                   <button
@@ -836,8 +830,8 @@ function EasyDemo() {
                     <h4>Tu campo · {demo.sector}</h4>
                     <FieldMap compact />
                     <p>
-                      El Sector C necesita revisión. Esquema ilustrativo, sin
-                      conexión a un campo real.
+                      El Sector C necesita revisión. Consulta los sectores y el
+                      trabajo pendiente.
                     </p>
                   </div>
                 )}
@@ -854,7 +848,7 @@ function EasyDemo() {
                         condiciones seguras.
                       </li>
                     </ol>
-                    <p>Este ejemplo no activa ni controla ningún equipo.</p>
+                    <p>Este panel no envía órdenes a equipos.</p>
                   </div>
                 )}
               </div>
@@ -869,7 +863,7 @@ function EasyDemo() {
           </div>
           <p className="demo-footnote">
             <ShieldCheck size={14} /> Misma cuenta. Mismos datos. Mismos
-            permisos.
+            permisos. Datos ilustrativos, sin conexión a equipos.
           </p>
         </div>
       </div>
@@ -1015,7 +1009,7 @@ function App() {
                 <a href="#facil" className="hero-easy">
                   Pensado especialmente para adultos mayores.
                   <span>
-                    Prueba una experiencia más Fácil <ArrowUpRight size={17} />
+                    Descubre AgroSmart Fácil <ArrowUpRight size={17} />
                   </span>
                 </a>
               </div>
@@ -1035,7 +1029,7 @@ function App() {
             <div className="container">
               <div className="context-grid reveal">
                 <div>
-                  <Tag>Situaciones que buscamos resolver</Tag>
+                  <Tag>Tu gestión, más sencilla</Tag>
                   <h2>
                     Ya conoces tu campo.
                     <br />
@@ -1048,8 +1042,8 @@ function App() {
                     información repartida entre apuntes y conversaciones.
                   </p>
                   <p>
-                    AgroSmart propone una forma comprensible de organizar los
-                    recursos y saber qué hacer cuando algo necesita atención.
+                    AgroSmart te ayuda a organizar tus recursos y saber qué
+                    hacer cuando algo necesita atención.
                   </p>
                 </div>
               </div>
@@ -1071,8 +1065,8 @@ function App() {
                 </div>
               </div>
               <p className="context-footnote">
-                Situaciones ilustrativas, no testimonios. El arándano es nuestro
-                escenario piloto; la propuesta parte de tus necesidades.
+                Arándano es nuestro cultivo piloto en La Libertad, Perú. La
+                gestión parte de tus necesidades y los recursos de tu campo.
               </p>
             </div>
           </section>
@@ -1132,10 +1126,10 @@ function App() {
               </div>
               <p className="resource-note">
                 Trabajos, agua, equipos, materiales y gastos en un contexto
-                compartido. La autonomía del productor guía la propuesta. El
+                compartido. Tú mantienes el control de tu gestión. El
                 seguimiento de energía, mantenimiento y gastos busca ayudarte a
-                comprender tus recursos. Los beneficios deben validarse en la
-                implementación y en pilotos.
+                comprender tus recursos. La evaluación de resultados económicos
+                requiere ingresos y costos completos de cada campaña.
               </p>
             </div>
           </section>
@@ -1149,8 +1143,9 @@ function App() {
                   <span>dar el paso.</span>
                 </h2>
                 <p>
-                  Lo que proponemos.
-                  <br />Y lo que aún debemos validar.
+                  Resuelve tus dudas.
+                  <br />
+                  Avanza con claridad.
                 </p>
                 <Sprout className="faq-sprout" size={90} strokeWidth={1} />
               </div>
@@ -1202,8 +1197,9 @@ function App() {
             </div>
             <div className="footer-bottom">
               <p>
-                Prototipo en desarrollo. Las integraciones disponibles dependen
-                de la implementación y del equipo conectado.
+                Gestión de recursos y operaciones agrícolas. La automatización
+                requiere infraestructura compatible, autorización y protecciones
+                locales.
               </p>
               <nav aria-label="Enlaces del pie">
                 {links.map(([name, href]) => (
@@ -1220,8 +1216,7 @@ function App() {
                 <a href="https://www.pexels.com/video/blueberry-picking-855230/">
                   Blueberry Picking, Pixabay / Pexels
                 </a>
-                . Material ilustrativo; no corresponde a una finca vinculada al
-                proyecto.{" "}
+                . Video de archivo utilizado con licencia de Pexels.{" "}
                 <a href="https://www.pexels.com/license/">Licencia Pexels</a>.
               </p>
 
@@ -1239,7 +1234,7 @@ function App() {
           aria-labelledby="app-dialog-title"
           aria-describedby="app-dialog-description"
           onClose={() => {
-            if (appDialog.current?.returnValue === "demo")
+            if (appDialog.current?.returnValue === "explore")
               document
                 .querySelector<HTMLElement>("#facil button")
                 ?.focus({ preventScroll: true });
@@ -1255,15 +1250,16 @@ function App() {
             empieza aquí.
           </h2>
           <p id="app-dialog-description">
-            La aplicación aún no tiene una dirección configurada. Mientras
-            tanto, puedes conocer la vista de demostración.
+            El acceso a la aplicación no está habilitado desde esta página.
+            Puedes conocer las funciones de AgroSmart y elegir la experiencia
+            que prefieres.
           </p>
           <a
             className="button dark"
             href="#facil"
-            onClick={() => appDialog.current?.close("demo")}
+            onClick={() => appDialog.current?.close("explore")}
           >
-            Ver demostración <ArrowUpRight size={18} />
+            Conocer AgroSmart <ArrowUpRight size={18} />
           </a>
           <button
             type="button"
